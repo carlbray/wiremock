@@ -1,5 +1,7 @@
 using System;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Net.Http.Headers;
 using Flurl;
 using Flurl.Http;
 using WireMock.RequestBuilders;
@@ -20,22 +22,27 @@ namespace XUnitTestProject1
         }
 
         [Fact]
-        public async Task TestDemo()
+        public async Task TestDemoJsonBody()
         {
+            HellowWorld hw = new HellowWorld {
+                Msg = "Hello world!"
+            };
+
             _wiremockFixture.Server.Given(Request.Create().WithPath("/foo").UsingGet())
                                     .RespondWith(
                                       Response.Create()
-                                        .WithStatusCode(200)
-                                        .WithHeader("Content-Type", "application/json")
-                                        .WithBody(@"{ ""msg"": ""Hello world!"" }")
+                                        .WithSuccess()
+                                        .WithHeader(HeaderNames.ContentType, "application/json")
+                                        .WithBodyAsJson(hw)
                                         .WithDelay(TimeSpan.FromSeconds(1))
                                     );
 
-            dynamic result = await "http://localhost:8081"
+            HellowWorld result = await "http://localhost:8081"
                                     .AppendPathSegment("foo")
-                                    .GetJsonAsync();
+                                    .GetAsync()
+                                    .ReceiveJson<HellowWorld>();
 
-            Assert.Equal("Hello world!", result.msg);
+            Assert.Equal("Hello world!", result.Msg);
         }
 
         public class WiremockFixture
@@ -52,5 +59,10 @@ namespace XUnitTestProject1
         public class WiremockCollection : ICollectionFixture<WiremockFixture>
         {
         }
+    }
+
+    internal class HellowWorld
+    {
+        public string Msg { get; set; }
     }
 }
