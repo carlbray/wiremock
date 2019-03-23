@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  xunittestproject1:
+    image: ${DOCKER_REGISTRY-}xunittestproject1
+    build:
+      context: .
+      dockerfile: XUnitTestProject1/Dockerfile
