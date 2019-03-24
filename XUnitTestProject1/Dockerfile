@@ -10,6 +10,5 @@ WORKDIR /src/XUnitTestProject1
 RUN dotnet build XUnitTestProject1.csproj -c Release -o /app
 
 
-# Mount a volume and write the results to the volume
-
+# Mount a volume TestResults, so results can be read on completion
 ENTRYPOINT ["dotnet", "test", "--logger", "trx;LogFileName=/TestResults/test-results.trx", "XUnitTestProject1.csproj"]

@@ -6,3 +6,6 @@ services:
     build:
       context: .
       dockerfile: XUnitTestProject1/Dockerfile
+    volumes:
+      - ./TestResults:/TestResults
+      - ./Logs:/Logs
