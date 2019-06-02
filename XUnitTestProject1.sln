@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitTestProject1", "XUnitTestProject1\XUnitTestProject1.csproj", "{2DB64604-D377-4983-9CC3-66E4DE193A00}"
-EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E180EBFF-EF5C-425D-A1B1-E219852698AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitWiremock", "XUnitTestProject1\XUnitWiremock.csproj", "{2DB64604-D377-4983-9CC3-66E4DE193A00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		{2DB64604-D377-4983-9CC3-66E4DE193A00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DB64604-D377-4983-9CC3-66E4DE193A00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DB64604-D377-4983-9CC3-66E4DE193A00}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E180EBFF-EF5C-425D-A1B1-E219852698AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E180EBFF-EF5C-425D-A1B1-E219852698AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E180EBFF-EF5C-425D-A1B1-E219852698AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E180EBFF-EF5C-425D-A1B1-E219852698AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
