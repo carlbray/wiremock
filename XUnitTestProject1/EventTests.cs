@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using System.Threading;
 using WireMock.Logging;
 using System;
+using Shouldly;
+
 
 namespace XUnitTestProject1
 {
@@ -29,52 +31,52 @@ namespace XUnitTestProject1
         [Fact]
         public async Task TestPassingCheck()
         {
-            var fooEvent = SetupResponse();
+            var fooEvent = SetupResponse(CreateHelloWorldResponse("Hello world!"));
 
             var result = await "http://localhost:8081"
                                     .AppendPathSegment("foo")
                                     .GetAsync()
-                                    .ReceiveJson<HellowWorld>();
+                                    .ReceiveJson<HellowWorldDto>();
 
-            Assert.True(fooEvent.WaitOne(1000));
-            Assert.Equal("Hello world!", result.Msg);
+            fooEvent.WaitOne(1000).ShouldBeTrue();
+            result.Msg.ShouldBe("Hello world!");
         }
 
         [Fact]
         public async Task TestWhenApiCalledTwice()
         {
-            var fooEvent = SetupResponse();
-            var fooEvent2 = SetupResponse();
+            var fooEvent = SetupResponse(CreateHelloWorldResponse("Hello world!"));
+            var fooEvent2 = SetupResponse(CreateHelloWorldResponse("Hello world!"));
 
             var result = await "http://localhost:8081"
                                     .AppendPathSegment("foo")
                                     .GetAsync()
-                                    .ReceiveJson<HellowWorld>();
+                                    .ReceiveJson<HellowWorldDto>();
 
-            Assert.True(fooEvent.WaitOne(1000));
-            Assert.Equal("Hello world!", result.Msg);
+            fooEvent.WaitOne(1000).ShouldBeTrue();
+            result.Msg.ShouldBe("Hello world!");
 
             result = await "http://localhost:8081"
                                     .AppendPathSegment("foo")
                                     .GetAsync()
-                                    .ReceiveJson<HellowWorld>();
+                                    .ReceiveJson<HellowWorldDto>();
 
-            Assert.True(fooEvent2.WaitOne(1000));
-            Assert.Equal("Hello world!", result.Msg);
+            fooEvent2.WaitOne(1000).ShouldBeTrue();
+            result.Msg.ShouldBe("Hello world!");
         }
 
         [Fact]
         public async Task TestWhenApiCalledTwice1EventHandler()
         {
-            var fooEvent = SetupResponse();
+            var fooEvent = SetupResponse(CreateHelloWorldResponse("Hello world!"));
 
             var result = await "http://localhost:8081"
                                     .AppendPathSegment("foo")
                                     .GetAsync()
-                                    .ReceiveJson<HellowWorld>();
+                                    .ReceiveJson<HellowWorldDto>();
 
-            Assert.True(fooEvent.WaitOne(1000));
-            Assert.Equal("Hello world!", result.Msg);
+            fooEvent.WaitOne(1000).ShouldBeTrue();
+            result.Msg.ShouldBe("Hello world!");
 
             var result2 = await "http://localhost:8081"
                                     .AppendPathSegment("foo")
@@ -82,14 +84,14 @@ namespace XUnitTestProject1
                                     .GetAsync()
                                     .ReceiveString();
 
-            Assert.False(fooEvent.WaitOne(1000));
-            Assert.Equal("Request not mapped!", result2);
+            fooEvent.WaitOne(1000).ShouldBeFalse();
+            result2.ShouldBe("Request not mapped!");
         }
 
         [Fact]
         public async Task TestFailingCheck()
         {
-            var barEvent = SetupResponse();
+            var barEvent = SetupResponse(CreateHelloWorldResponse("Hello world!"));
 
             var result = await "http://localhost:8081"
                                     .AppendPathSegment("bar")
@@ -97,24 +99,19 @@ namespace XUnitTestProject1
                                     .GetAsync()
                                     .ReceiveString();
 
-            Assert.False(barEvent.WaitOne(1000));
-            Assert.Equal("Request not mapped!", result);
+            barEvent.WaitOne(1000).ShouldBeFalse();
+            result.ShouldBe("Request not mapped!");
         }
 
         // Check when you expect the call to be made twice. As the mapping will be reused.
 
-        internal class HellowWorld
+        internal class HellowWorldDto
         {
             public string Msg { get; set; }
         }
 
-        private AutoResetEvent SetupResponse()
+        private AutoResetEvent SetupResponse(HellowWorldDto hw)
         {
-            HellowWorld hw = new HellowWorld
-            {
-                Msg = "Hello world!"
-            };
-
             Guid guid = Guid.NewGuid();
             _wiremockFixture.Server.Given(Request.Create().WithPath("/foo").UsingGet())
                                     .WithGuid(guid)
@@ -127,6 +124,14 @@ namespace XUnitTestProject1
             var callEvent = new AutoResetEvent(false);
             _wiremockFixture.Server.LogEntriesChanged += CheckForApiCall(callEvent, guid);
             return callEvent;
+        }
+
+        private HellowWorldDto CreateHelloWorldResponse(string msg)
+        {
+            return new HellowWorldDto
+            {
+                Msg = msg
+            };
         }
 
         private NotifyCollectionChangedEventHandler CheckForApiCall(AutoResetEvent waitEvent, Guid guid)

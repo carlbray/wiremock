@@ -1,4 +1,5 @@
-﻿using Microsoft.Net.Http.Headers;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using System.Net;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -10,6 +11,8 @@ namespace XUnitTestProject1
     public class WiremockFixture
     {
         public FluentMockServer Server { get; }
+
+        public ServiceProvider ServiceProvider { get; private set; }
 
         public WiremockFixture()
         {
@@ -25,6 +28,8 @@ namespace XUnitTestProject1
                             .WithHeader(HeaderNames.ContentType, "application/text")
                             .WithBody("Request not mapped!")
                         );
+
+            var serviceCollection = new ServiceCollection();
 
         }
     }
